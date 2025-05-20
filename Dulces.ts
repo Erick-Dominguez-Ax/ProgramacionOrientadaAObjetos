@@ -17,7 +17,7 @@ interface IDulces{
 
 interface Maquina{
     seleccionarDulce(nombre: string):void;
-    compraDulce(nombre:string, cantidad: number):void;
+    compraDulce(nombre:string, cantidad: number, dinero:number):void;
     ventasTotales():number;
     ventasPorProducto(nombre:string):void;
 }
@@ -39,6 +39,7 @@ class Dulce implements IDulces{
         Dulce.stock = Dulce.stock - compraDulces;
         Dulce.venta++;
     }
+
     ventas(){
         return Dulce.venta;
     }
@@ -69,11 +70,14 @@ class MaquinaExpendedora implements Maquina{
             }
         });
     }
-    compraDulce(nombre: string, cantidad: number): void {
+    compraDulce(nombre: string, cantidad: number, dinero:number): void {
         this.dulces.forEach(element => {
-            if(element.nombre===nombre){
+            if(element.nombre===nombre && dinero > (cantidad*element.precio)){
                 element.compra(cantidad);
+                console.log(`su cambio es de: ${dinero - (element.precio*cantidad)}`);
                 MaquinaExpendedora.ventas++
+            }else{
+                console.log("El producto no existe o los fondos son insuficientes.")
             }
         })
     }
@@ -104,11 +108,11 @@ const lunetas = new Dulce("Lunetas", "Chocolate variado", 20);
 const dulces :Dulce[]=[chocolate, picafresa, pelon, lunetas]
 const nuevaMaquina = new MaquinaExpendedora(dulces);
 
-nuevaMaquina.compraDulce("Chocolate", 5);
-nuevaMaquina.compraDulce("Pelon", 2);
-nuevaMaquina.compraDulce("Lunetas", 7);
-nuevaMaquina.compraDulce("Picafresas", 12);
-nuevaMaquina.compraDulce("Chocolate", 2);
+nuevaMaquina.compraDulce("Chocolate", 5, 35);
+nuevaMaquina.compraDulce("Pelon", 2, 10);
+nuevaMaquina.compraDulce("Lunetas", 7, 200);
+nuevaMaquina.compraDulce("Picafresas", 10, 10);
+nuevaMaquina.compraDulce("Chocolate", 2, 50);
 
 nuevaMaquina.ventasPorProducto("Chocolate");
 
